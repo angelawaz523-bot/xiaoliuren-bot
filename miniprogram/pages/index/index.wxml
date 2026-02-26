@@ -1,0 +1,96 @@
+<view class="container">
+  <view class="header">
+    <text class="title">小六壬</text>
+    <text class="subtitle">掐指一算，吉凶自知</text>
+  </view>
+
+  <view class="hand-card">
+    <view class="hand-container">
+      <view class="palm"></view>
+      <view class="thumb"></view>
+      <view class="finger index-finger"></view>
+      <view class="finger middle-finger"></view>
+      <view class="finger ring-finger"></view>
+      <view class="finger pinky-finger"></view>
+
+      <view
+        wx:for="{{segments}}"
+        wx:key="index"
+        class="segment {{item.className}}"
+        style="left: {{item.left}}rpx; top: {{item.top}}rpx; width: {{item.w}}rpx; height: {{item.h}}rpx;"
+      >
+        <text class="seg-label">{{item.name}}</text>
+      </view>
+
+      <view class="thumb-pointer {{pointerVisible ? 'show' : ''}}" style="left: {{pointerLeft}}rpx; top: {{pointerTop}}rpx;"></view>
+      <view class="counting-bubble {{bubbleVisible ? 'show' : ''}} {{bubbleIsResult ? 'result' : ''}}" style="left: {{bubbleLeft}}rpx; top: {{bubbleTop}}rpx;">{{bubbleText}}</view>
+    </view>
+    <view class="hand-caption">左手（右手拇指掐算）</view>
+  </view>
+
+  <view class="steps-card">
+    <view class="step-row">
+      <text class="step-title">第一步：从「大安」起月</text>
+      <text class="step-badge {{monthBadgeClass}}">{{monthBadgeText}}</text>
+    </view>
+    <view class="step-detail">
+      <text class="step-label">农历月份：</text>
+      <text class="step-value">{{lunarMonth}}</text>
+    </view>
+    <view class="step-result">落于：<text class="step-highlight month">{{monthStopName}}</text></view>
+
+    <view class="step-divider"></view>
+
+    <view class="step-row">
+      <text class="step-title">第二步：从月落处起日</text>
+      <text class="step-badge {{dayBadgeClass}}">{{dayBadgeText}}</text>
+    </view>
+    <view class="step-detail">
+      <text class="step-label">农历日期：</text>
+      <text class="step-value">{{lunarDay}}</text>
+    </view>
+    <view class="step-result">落于：<text class="step-highlight day">{{dayStopName}}</text></view>
+
+    <view class="step-divider"></view>
+
+    <view class="step-row">
+      <text class="step-title">第三步：从日落处起时辰</text>
+      <text class="step-badge {{hourBadgeClass}}">{{hourBadgeText}}</text>
+    </view>
+    <view class="step-detail">
+      <text class="step-label">时辰序号：</text>
+      <text class="step-value">{{chineseHour}}</text>
+    </view>
+    <view class="step-result">最终结果：<text class="step-highlight hour">{{hourStopName}}</text></view>
+  </view>
+
+  <view class="card">
+    <view class="input-label">请输入您想问的事情</view>
+    <input class="question-input" placeholder="例如：事业发展如何" value="{{question}}" bindinput="onInput" />
+    <button class="divine-btn" bindtap="onDivine" disabled="{{loading}}">掐指一算</button>
+  </view>
+
+  <view class="result-card" wx:if="{{result}}">
+    <view class="result-header">
+      <text class="result-name">{{result.name}}</text>
+      <text class="result-status">{{result.result}}</text>
+    </view>
+    <view class="result-line">含义：{{result.meaning}}</view>
+    <view class="result-line">古诀：{{result.detail}}</view>
+  </view>
+
+  <view class="ai-card" wx:if="{{ai}}">
+    <view class="ai-section">
+      <text class="ai-title">卦象解析</text>
+      <text class="ai-content">{{ai.analysis}}</text>
+    </view>
+    <view class="ai-section">
+      <text class="ai-title">事情预测</text>
+      <text class="ai-content">{{ai.prediction}}</text>
+    </view>
+    <view class="ai-section">
+      <text class="ai-title">建议指引</text>
+      <text class="ai-content">{{ai.advice}}</text>
+    </view>
+  </view>
+</view>

@@ -1,7 +1,8 @@
 import os
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+from lunardate import LunarDate
 import dashscope
 from dashscope import Generation
 
@@ -9,6 +10,7 @@ app = Flask(__name__, static_folder='static')
 CORS(app)
 
 DASHSCOPE_API_KEY = os.environ.get('DASHSCOPE_API_KEY')
+CHINA_TZ = timezone(timedelta(hours=8))
 
 LIU_REN = [
     {
@@ -62,9 +64,8 @@ LIU_REN = [
 ]
 
 def get_lunar_date(solar_date):
-    lunar_month = solar_date.month
-    lunar_day = solar_date.day
-    return lunar_month, lunar_day
+    lunar = LunarDate.fromSolarDate(solar_date.year, solar_date.month, solar_date.day)
+    return lunar.month, lunar.day
 
 def get_chinese_hour(hour):
     hour_mapping = [
@@ -153,7 +154,7 @@ def divine():
     data = request.get_json()
     question = data.get('question', '')
     
-    now = datetime.now()
+    now = datetime.now(CHINA_TZ)
     month, day = get_lunar_date(now)
     hour = get_chinese_hour(now.hour)
     
