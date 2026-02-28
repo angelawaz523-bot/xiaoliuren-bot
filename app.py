@@ -122,20 +122,27 @@ def generate_ai_response(question, result, time_info):
 
     try:
         dashscope.api_key = DASHSCOPE_API_KEY
-        response = Generation.call(
-            model='qwen-turbo',
-            prompt=prompt,
-            max_tokens=800,
-            temperature=0.8
-        )
-        
-        if response.status_code == 200:
-            import json
-            import re
-            text = response.output.text
-            json_match = re.search(r'\{[\s\S]*\}', text)
-            if json_match:
-                return json.loads(json_match.group())
+        model_candidates = []
+        configured_model = os.environ.get('DASHSCOPE_MODEL')
+        if configured_model:
+            model_candidates.append(configured_model)
+        model_candidates.append('qwen3.5-flash')
+        model_candidates.append('qwen-turbo')
+
+        for model in dict.fromkeys(model_candidates):
+            response = Generation.call(
+                model=model,
+                prompt=prompt,
+                max_tokens=800,
+                temperature=0.8
+            )
+            if response.status_code == 200:
+                import json
+                import re
+                text = response.output.text
+                json_match = re.search(r'\{[\s\S]*\}', text)
+                if json_match:
+                    return json.loads(json_match.group())
     except Exception as e:
         print(f"AI generation error: {e}")
     
